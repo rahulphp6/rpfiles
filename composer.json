@@ -1,5 +1,5 @@
 {
-    "name": "rahulphp6/helpers",
+    "name": "rahulphp6/rpfiles",
     "description": "Core helper functions and rpaction",
     "type": "library",
     "require": {
