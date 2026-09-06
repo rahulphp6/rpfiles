@@ -10,7 +10,8 @@
             "Rahul\\Helpers\\": "./"
         },
         "files": [
-            "rpAction.php"
+            "rpAction.php",
+            "zohoApi.php"
         ]
     }
 }
