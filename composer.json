@@ -1,17 +1,19 @@
 {
     "name": "rahulphp6/rpfiles",
-    "description": "Core helper functions and rpaction",
+    "description": "Reusable PHP helpers for MySQL and Zoho Books integrations",
     "type": "library",
+    "license": "MIT",
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.0",
+        "ext-curl": "*",
+        "ext-mysqli": "*"
     },
     "autoload": {
         "psr-4": {
-            "Rahul\\Helpers\\": "./"
-        },
-        "files": [
-            "rpAction.php",
-            "zohoApi.php"
-        ]
+            "Rahul\\Helpers\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "php tests/smoke.php"
     }
 }

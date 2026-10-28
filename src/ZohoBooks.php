@@ -30,7 +30,6 @@ class ZohoBooks
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
@@ -59,8 +58,6 @@ class ZohoBooks
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/x-www-form-urlencoded"]);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
             $error = curl_error($ch);
@@ -83,11 +80,11 @@ class ZohoBooks
             'grant_type' => 'refresh_token'
         ]);
 
-        $ch = curl_init("$url?$params");
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/x-www-form-urlencoded"]);
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
             $error = curl_error($ch);
@@ -176,7 +173,6 @@ class ZohoBooks
         $curlOptions = [
             CURLOPT_URL => $api,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
         ];
 
         switch ($method) {
