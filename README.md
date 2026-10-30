@@ -3,6 +3,9 @@
 `rahulphp6/rpfiles` is a PHP helper library with MySQL utilities and a Zoho
 Books API client.
 
+For a more visual, browser-friendly guide, open the
+[HTML documentation](docs/index.html).
+
 ## Requirements
 
 - PHP 8.0 or later

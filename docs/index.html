@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Practical documentation for rpfiles PHP helpers, MySQL CRUD, request helpers, security, and Zoho Books.">
+    <title>rpfiles Documentation</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --page: #f5f7fb;
+            --surface: #fff;
+            --ink: #172033;
+            --muted: #64708a;
+            --line: #e2e7f0;
+            --brand: #4f46e5;
+            --brand-soft: #eef2ff;
+            --code: #111827;
+            --green: #047857;
+            --green-soft: #ecfdf5;
+            --amber: #92400e;
+            --amber-soft: #fffbeb;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+        body {
+            margin: 0;
+            background: var(--page);
+            color: var(--ink);
+            line-height: 1.65;
+        }
+
+        a { color: var(--brand); }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            max-width: 1440px;
+            min-height: 100vh;
+            margin: 0 auto;
+        }
+
+        aside {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 30px 20px;
+            border-right: 1px solid var(--line);
+            background: var(--surface);
+        }
+
+        .brand {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--ink);
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .version { color: var(--muted); font-size: .85rem; }
+
+        nav { margin-top: 30px; }
+
+        nav a {
+            display: block;
+            padding: 8px 11px;
+            border-radius: 8px;
+            color: #46516a;
+            font-size: .94rem;
+            text-decoration: none;
+        }
+
+        nav a:hover, nav a:focus-visible {
+            background: var(--brand-soft);
+            color: var(--brand);
+            outline: none;
+        }
+
+        main {
+            width: min(100%, 980px);
+            margin: 0 auto;
+            padding: 54px clamp(22px, 6vw, 82px) 80px;
+        }
+
+        .eyebrow {
+            color: var(--brand);
+            font-size: .8rem;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 8px 0 12px;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            letter-spacing: -.05em;
+            line-height: 1.1;
+        }
+
+        h2 {
+            margin: 58px 0 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--line);
+            font-size: 1.75rem;
+            letter-spacing: -.025em;
+            scroll-margin-top: 20px;
+        }
+
+        h3 { margin: 30px 0 8px; font-size: 1.18rem; }
+        p { margin: 12px 0; }
+        .lead { max-width: 720px; color: var(--muted); font-size: 1.15rem; }
+        .muted { color: var(--muted); }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 22px 0 28px;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--surface);
+            color: #46516a;
+            font-size: .82rem;
+            font-weight: 650;
+        }
+
+        .callout {
+            margin: 22px 0;
+            padding: 15px 18px;
+            border: 1px solid #c7d2fe;
+            border-left: 4px solid var(--brand);
+            border-radius: 10px;
+            background: var(--brand-soft);
+        }
+
+        .callout.success {
+            border-color: #a7f3d0;
+            border-left-color: var(--green);
+            background: var(--green-soft);
+        }
+
+        .callout.warning {
+            border-color: #fde68a;
+            border-left-color: #d97706;
+            background: var(--amber-soft);
+        }
+
+        .callout p:first-child { margin-top: 0; }
+        .callout p:last-child { margin-bottom: 0; }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        .card {
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--surface);
+        }
+
+        .card strong { display: block; margin-bottom: 5px; }
+        .card span { color: var(--muted); font-size: .92rem; }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin: 18px 0;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--surface);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+        th { background: #f8f9fc; font-size: .88rem; }
+        tr:last-child td { border-bottom: 0; }
+
+        code {
+            padding: .12em .36em;
+            border-radius: 5px;
+            background: #edf0f6;
+            color: #293149;
+            font-size: .91em;
+        }
+
+        .code-wrap {
+            position: relative;
+            margin: 14px 0 20px;
+        }
+
+        pre {
+            overflow-x: auto;
+            margin: 0;
+            padding: 20px;
+            border: 1px solid #273244;
+            border-radius: 12px;
+            background: var(--code);
+            color: #e5e7eb;
+            font-size: .9rem;
+            line-height: 1.6;
+            tab-size: 4;
+        }
+
+        pre code {
+            padding: 0;
+            background: transparent;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        .copy {
+            position: absolute;
+            top: 9px;
+            right: 9px;
+            padding: 6px 10px;
+            border: 1px solid #4b5563;
+            border-radius: 7px;
+            background: #1f2937;
+            color: #f9fafb;
+            cursor: pointer;
+            font: inherit;
+            font-size: .78rem;
+        }
+
+        .copy:hover { background: #374151; }
+
+        footer {
+            margin-top: 64px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: .9rem;
+        }
+
+        .mobile-nav { display: none; }
+
+        @media (max-width: 760px) {
+            .layout { display: block; }
+            aside {
+                position: static;
+                height: auto;
+                padding: 16px 20px;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+            nav { display: none; }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                margin-top: 12px;
+                padding: 9px;
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                background: var(--surface);
+                color: var(--ink);
+                font: inherit;
+            }
+            main { padding-top: 35px; }
+            h2 { margin-top: 44px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <aside>
+            <a class="brand" href="#top">rpfiles</a>
+            <div class="version">PHP helpers · MySQL · Zoho Books</div>
+            <nav aria-label="Documentation navigation">
+                <a href="#overview">Overview</a>
+                <a href="#installation">Installation</a>
+                <a href="#configuration">Database configuration</a>
+                <a href="#crud">Database CRUD</a>
+                <a href="#request">Request helpers</a>
+                <a href="#other-helpers">Other helpers</a>
+                <a href="#security">Security</a>
+                <a href="#zoho">Zoho Books</a>
+                <a href="#development">Development &amp; demo</a>
+            </nav>
+            <select class="mobile-nav" aria-label="Jump to documentation section">
+                <option value="#overview">Overview</option>
+                <option value="#installation">Installation</option>
+                <option value="#configuration">Database configuration</option>
+                <option value="#crud">Database CRUD</option>
+                <option value="#request">Request helpers</option>
+                <option value="#other-helpers">Other helpers</option>
+                <option value="#security">Security</option>
+                <option value="#zoho">Zoho Books</option>
+                <option value="#development">Development &amp; demo</option>
+            </select>
+        </aside>
+
+        <main id="top">
+            <div class="eyebrow">Project documentation</div>
+            <h1>Build useful PHP pages, without a framework</h1>
+            <p class="lead">
+                <strong>rpfiles</strong> is a PHP helper library for MySQL database actions,
+                request values, common application helpers, and Zoho Books API calls.
+                Use it in regular PHP pages; no MVC framework is required.
+            </p>
+            <div class="badges" aria-label="Requirements">
+                <span class="badge">PHP 8.0+</span>
+                <span class="badge">MySQL / mysqli</span>
+                <span class="badge">Composer</span>
+                <span class="badge">cURL for Zoho/API</span>
+            </div>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <div class="card-grid">
+                    <div class="card"><strong>Connect</strong><span>Open a MySQL connection with environment configuration.</span></div>
+                    <div class="card"><strong>CRUD</strong><span>Insert, select, update, and delete with prepared values.</span></div>
+                    <div class="card"><strong>Request helpers</strong><span>Read GET and POST values with convenient type helpers.</span></div>
+                    <div class="card"><strong>Zoho Books</strong><span>Use the included API client for Books integrations.</span></div>
+                </div>
+                <div class="callout">
+                    <strong>What it does not do:</strong>
+                    <p>rpfiles is a helper library, not a framework. It does not create your database, tables, routes, login flow, or application authorization rules.</p>
+                </div>
+            </section>
+
+            <section id="installation">
+                <h2>Installation</h2>
+                <p>If the package is not available on Packagist, register its GitHub repository and install the development branch:</p>
+                <div class="code-wrap"><pre><code>composer config repositories.rpfiles vcs https://github.com/rahulphp6/rpfiles
+composer require rahulphp6/rpfiles:dev-main</code></pre></div>
+                <p>Load Composer's autoloader in your PHP entry point:</p>
+                <div class="code-wrap"><pre><code>&lt;?php
+require __DIR__ . '/vendor/autoload.php';
+
+use Rahul\Helpers\RpAction;</code></pre></div>
+            </section>
+
+            <section id="configuration">
+                <h2>Database configuration</h2>
+                <p><code>RpAction::OpenCon()</code> reads the following keys from <code>$_ENV</code>. Configure them in your bootstrap or environment loader; the library does not load <code>.env</code> files itself.</p>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Key</th><th>Purpose</th><th>Default</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>DB_HOST</code></td><td>MySQL host</td><td><code>localhost</code></td></tr>
+                            <tr><td><code>DB_USER</code></td><td>MySQL username</td><td><code>root</code></td></tr>
+                            <tr><td><code>DB_PASS</code></td><td>MySQL password</td><td>Empty</td></tr>
+                            <tr><td><code>DB_NAME</code></td><td>Default database</td><td><code>logistic_db</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-wrap"><pre><code>&lt;?php
+// Set these securely via your app's environment/bootstrap configuration.
+$connection = RpAction::OpenCon();
+
+// Optionally select a specific database:
+$otherConnection = RpAction::OpenCon('reporting_database');</code></pre></div>
+                <p>Most <code>secureDbAction()</code> calls open their own connection, so calling <code>OpenCon()</code> first is optional.</p>
+            </section>
+
+            <section id="crud">
+                <h2>Database CRUD, one page at a time</h2>
+                <p>The examples use a <code>customers</code> table. Create your schema before using the helpers:</p>
+                <div class="code-wrap"><pre><code>CREATE TABLE customers (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(254) NOT NULL
+);</code></pre></div>
+
+                <h3><code>secureDbAction()</code> action codes</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Code</th><th>Action</th><th>Typical result</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>1</code></td><td>Insert</td><td><code>success</code> and new <code>insert_id</code></td></tr>
+                            <tr><td><code>2</code></td><td>Update</td><td><code>success</code> and <code>affected_rows</code></td></tr>
+                            <tr><td><code>3</code></td><td>Delete</td><td><code>success</code> and <code>affected_rows</code></td></tr>
+                            <tr><td><code>4</code></td><td>Select</td><td><code>success</code> and rows in <code>data</code></td></tr>
+                            <tr><td><code>5</code></td><td>List columns</td><td><code>success</code> and column names in <code>data</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Signature: <code>secureDbAction($table, $action, $data = [], $where = '', $params = [], $db = null)</code>. The <code>$where</code> fragment does not include the word <code>WHERE</code>. Use <code>?</code> placeholders for values and pass those values in <code>$params</code>.</p>
+
+                <h3>Add a record</h3>
+                <div class="code-wrap"><pre><code>&lt;?php
+$name = RpAction::safePost('name', '', false);
+$email = RpAction::safePost('email', '', false);
+
+if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    // Show a validation message.
+} else {
+    $result = RpAction::secureDbAction('customers', 1, [
+        'name' =&gt; $name,
+        'email' =&gt; $email,
+    ]);
+
+    if ($result['success']) {
+        $newCustomerId = $result['insert_id'];
+    } else {
+        // Log the error safely; do not expose database details to visitors.
+    }
+}</code></pre></div>
+
+                <h3>Read records</h3>
+                <div class="code-wrap"><pre><code>$result = RpAction::secureDbAction(
+    'customers',
+    4,
+    ['columns' =&gt; 'id, name, email', 'orderBy' =&gt; 'id DESC', 'limit' =&gt; 20],
+    'email = ?',
+    ['person@example.com']
+);
+
+if ($result['success']) {
+    foreach ($result['data'] as $customer) {
+        echo htmlspecialchars($customer['name'], ENT_QUOTES, 'UTF-8');
+    }
+}</code></pre></div>
+                <p>Select options include <code>columns</code>, <code>orderBy</code>, <code>limit</code>, and <code>offset</code>. Escape database content when displaying it in HTML.</p>
+
+                <h3>Edit a record</h3>
+                <div class="code-wrap"><pre><code>$customerId = RpAction::safePostInt('id');
+$name = RpAction::safePost('name', '', false);
+
+if ($customerId &gt; 0 &amp;&amp; $name !== '') {
+    $result = RpAction::secureDbAction(
+        'customers',
+        2,
+        ['name' =&gt; $name],
+        'id = ?',
+        [$customerId]
+    );
+}</code></pre></div>
+
+                <h3>Delete a record</h3>
+                <div class="code-wrap"><pre><code>$customerId = RpAction::safePostInt('id');
+
+if ($customerId &gt; 0) {
+    $result = RpAction::secureDbAction(
+        'customers',
+        3,
+        [],
+        'id = ?',
+        [$customerId]
+    );
+}</code></pre></div>
+                <div class="callout warning">
+                    <strong>For write actions:</strong>
+                    <p>Use a POST form for deletes, ask for confirmation, and check that the signed-in user is authorized to change that record. The helper does not implement these application rules.</p>
+                </div>
+            </section>
+
+            <section id="request">
+                <h2>GET and POST helpers</h2>
+                <div class="code-wrap"><pre><code>$search = RpAction::safeGet('search', '');
+$page = RpAction::safeGetInt('page', 1);
+$active = RpAction::safePostBool('active');
+
+// false skips HTML escaping; validate input, bind it in SQL,
+// and escape it later for the output context.
+$rawName = RpAction::safePost('name', '', false);</code></pre></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Helper</th><th>Behavior</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>safePost($key, $default, $sanitize)</code></td><td>Reads POST; strings are trimmed and HTML-escaped by default.</td></tr>
+                            <tr><td><code>safeGet($key, $default, $sanitize)</code></td><td>Reads GET; strings are trimmed and HTML-escaped by default.</td></tr>
+                            <tr><td><code>safePostInt(...)</code>, <code>safeGetInt(...)</code></td><td>Cast the provided value to an integer.</td></tr>
+                            <tr><td><code>safePostBool(...)</code>, <code>safeGetBool(...)</code></td><td>True only for the string <code>'1'</code> or <code>'true'</code>.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>These are convenience helpers, not complete input validation. Validate according to your application's requirements and escape output for its context.</p>
+            </section>
+
+            <section id="other-helpers">
+                <h2>Other RpAction helpers</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Helper(s)</th><th>What they are for</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>getRowById($table, $id)</code></td><td>Return one row using a prepared ID value.</td></tr>
+                            <tr><td><code>redirectTo($path)</code></td><td>Redirect to a path and exit.</td></tr>
+                            <tr><td><code>isAdmin()</code>, <code>isUser()</code>, <code>checkUser()</code>, <code>isShop()</code>, <code>isSuper()</code></td><td>Role checks based on the session's <code>role</code>; <code>isUser('location')</code> returns a location ID when found.</td></tr>
+                            <tr><td><code>isPermMode(...)</code>, <code>isModCheck(...)</code></td><td>Permission lookups that expect the application's permissions tables.</td></tr>
+                            <tr><td><code>renderDropdown(...)</code>, <code>renderColName(...)</code></td><td>Build/output a database-backed select; quick-add needs matching application UI.</td></tr>
+                            <tr><td><code>mgs(...)</code>, <code>alert(...)</code></td><td>Output alert markup/scripts; only use trusted or correctly escaped messages.</td></tr>
+                            <tr><td><code>flattenStdClass(...)</code>, <code>array_map_deep(...)</code>, <code>is_multi(...)</code>, <code>progress(...)</code></td><td>General data and display utilities.</td></tr>
+                            <tr><td><code>lastId(...)</code>, <code>colSum(...)</code>, <code>getTotal(...)</code>, <code>table_sum(...)</code></td><td>Legacy database lookup and aggregate helpers.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout warning">
+                    <strong>Legacy SQL helpers need extra care.</strong>
+                    <p><code>dbAction()</code>, <code>queryRun()</code>, <code>getRow()</code>, <code>getName()</code>, and aggregate helpers may accept or construct SQL fragments. Only pass trusted, application-controlled table names, columns, and conditions; prefer prepared statements for request values.</p>
+                </div>
+                <p>Role and permission helpers rely on the consuming app's session/database conventions. Start and protect the session yourself, then enforce permissions on every server-side action.</p>
+            </section>
+
+            <section id="security">
+                <h2>Security: what is and is not protected</h2>
+                <div class="callout success">
+                    <strong>Prepared values help prevent SQL injection.</strong>
+                    <p><code>secureDbAction()</code> binds database values using prepared statements. Keep table names, columns, selected fields, ordering, and SQL fragments fixed or allow-listed because those query parts are not bound values.</p>
+                </div>
+                <ul>
+                    <li><code>safePost()</code> and <code>safeGet()</code> do not authenticate users or authorize actions.</li>
+                    <li>They do not provide CSRF protection or enforce business validation.</li>
+                    <li>HTML escaping for request strings does not replace output escaping for other contexts.</li>
+                    <li>Do not expose database errors, raw SQL, credentials, or sensitive query data to visitors.</li>
+                    <li>Protect database and OAuth credentials; do not commit secrets.</li>
+                    <li>Legacy raw-SQL helpers are not a replacement for prepared statements.</li>
+                </ul>
+            </section>
+
+            <section id="zoho">
+                <h2>Zoho Books</h2>
+                <p>The library also provides a Zoho Books client. A basic API call looks like this:</p>
+                <div class="code-wrap"><pre><code>&lt;?php
+use Rahul\Helpers\ZohoBooks;
+
+$client = new ZohoBooks($accessToken);
+$response = $client-&gt;request('contacts', 'GET');</code></pre></div>
+                <p>OAuth/token helpers need valid Zoho settings and application-specific configuration. The existing token integration expects constants such as <code>client_idb</code>, <code>client_secretb</code>, <code>BASE</code>, <code>organizationId</code>, and <code>common_db</code>, along with a <code>token</code> table. Keep credentials private.</p>
+            </section>
+
+            <section id="development">
+                <h2>Development and local demo</h2>
+                <p>Run the package smoke test from the project root:</p>
+                <div class="code-wrap"><pre><code>composer install
+composer test</code></pre></div>
+                <p>The smoke test checks Composer autoloading; it does not connect to MySQL or call Zoho.</p>
+                <p>To run the example page locally, configure your MySQL connection in PowerShell, then start the PHP server from the project root:</p>
+                <div class="code-wrap"><pre><code>$env:DB_HOST = "127.0.0.1"
+$env:DB_USER = "root"
+$env:DB_PASS = "your-local-password"
+$env:DB_NAME = "your-database-name"
+php -S 127.0.0.1:8000 -t examples</code></pre></div>
+                <p>Use a database containing a <code>customers</code> table, then visit <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>. The example displays at most 20 customer rows and does not call Zoho. Stop the server with <kbd>Ctrl</kbd>+<kbd>C</kbd>.</p>
+            </section>
+
+            <footer>
+                <p>More details: <a href="../README.md">README</a> · License: MIT</p>
+                <p>Documentation for <code>rahulphp6/rpfiles</code>.</p>
+            </footer>
+        </main>
+    </div>
+    <script>
+        document.querySelectorAll('.code-wrap pre').forEach((pre) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'copy';
+            button.textContent = 'Copy';
+            button.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(pre.innerText);
+                    button.textContent = 'Copied';
+                    window.setTimeout(() => { button.textContent = 'Copy'; }, 1400);
+                } catch (error) {
+                    button.textContent = 'Copy unavailable';
+                    window.setTimeout(() => { button.textContent = 'Copy'; }, 1800);
+                }
+            });
+            pre.parentElement.appendChild(button);
+        });
+
+        document.querySelector('.mobile-nav').addEventListener('change', (event) => {
+            window.location.hash = event.target.value;
+        });
+    </script>
+</body>
+</html>
